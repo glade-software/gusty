@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://VectorLine.gd" type="Script" id=1]
+
+[sub_resource type="ShaderMaterial" id=1]
+
+[node name="VectorLine" type="ImmediateGeometry"]
+material_override = SubResource( 1 )
+script = ExtResource( 1 )
