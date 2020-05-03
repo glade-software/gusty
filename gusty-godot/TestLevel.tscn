@@ -14,7 +14,6 @@
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 0.707107, -0.353553, 0.612373, 0, 0.866026, 0.499999, -0.707107, -0.353553, 0.612373, 3.169, 2.98223, 3.11267 )
 script = ExtResource( 5 )
-enabled = false
 sensitivity = 0.397
 use_gui = false
 
@@ -37,6 +36,7 @@ visible = false
 
 [node name="Wall2" parent="." instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 3.023, 0 )
+visible = false
 
 [node name="Wall3" parent="." instance=ExtResource( 6 )]
 transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 3.023, 3.5 )
@@ -44,4 +44,5 @@ visible = false
 
 [node name="Wall4" parent="." instance=ExtResource( 6 )]
 transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 3.023, -3.5 )
+visible = false
 [connection signal="new_vector" from="TestHUD" to="Ball" method="add_vector"]
