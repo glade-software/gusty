@@ -1,15 +1,14 @@
 extends StaticBody
 
-func _ready():
-  var height_map_shape = $CollisionShape.shape
+func new_mapdata_received(path):
   
+  var height_map_shape = $CollisionShape.shape
   # hard coded for now - should have an import UI button in the test level
   
   # button should build height map, draw new surface, and reset player position
   
-  var filename = "res://level-data/test.csv"
   var file = File.new()
-  file.open(filename, File.READ)
+  file.open(path, File.READ)
   
   # length of csv line array is map width
   # of lines read is map depth
@@ -19,8 +18,6 @@ func _ready():
   var read_map_data = PoolRealArray()
   
   file.seek(0)
-  
-  # no error checking, assume the csv is valid and a rectangular matrix of vals
   while not file.eof_reached():
     var csv_line = file.get_csv_line()
     
@@ -28,15 +25,16 @@ func _ready():
     if csv_line.size() != map_width:
       break
     for num in csv_line:
-      # change string to float?
-      read_map_data.push_back(num.to_float())
-      print("adding num: " + num)
+      if num.is_valid_float():
+        read_map_data.push_back(num.to_float())
     map_depth = map_depth + 1
-    
-  if read_map_data.size() != (map_width*map_depth):
-    print("error reading height map file " + filename)
-    print("width: " + str(map_width) + ", height: " + str(map_depth))
   file.close()
+  
+  # Quit if loaded matrix is not a perfect rectangke
+  if read_map_data.size() != (map_width*map_depth):
+    print("error reading height map file " + path)
+    print("width: " + str(map_width) + ", height: " + str(map_depth))
+    return
   
   # load in read height map to collisionshape
   height_map_shape.map_width = map_width
@@ -45,14 +43,14 @@ func _ready():
   
   var material = SpatialMaterial.new()
   # green
-  material.albedo_color = Color(0.0, 1.0, 0.0, 1.0)
+  material.albedo_color = Color(0.4, 1.0, 0.1, 1.0)
   
   var st = SurfaceTool.new()
   st.begin(Mesh.PRIMITIVE_TRIANGLES)
   st.set_material(material)
-  st.add_uv(Vector2(0, 0))
+  st.add_uv(Vector2(0, 0)) # not sure what this does
   
-  #units to step for each "square/rect" - should probably stay 1
+  #units to step for each "square/rect" - will probably stay 1
   var x_scale = $CollisionShape.scale.x
   var z_scale = $CollisionShape.scale.z
   

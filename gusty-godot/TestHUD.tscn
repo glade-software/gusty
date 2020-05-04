@@ -113,4 +113,28 @@ text = "Clear Vector"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="btnImportLevel" type="Button" parent="."]
+margin_left = 14.0
+margin_top = 15.0
+margin_right = 96.0
+margin_bottom = 35.0
+text = "Import CSV height map"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="dlgImportLevel" type="FileDialog" parent="."]
+margin_left = 279.0
+margin_top = 81.0
+margin_right = 760.0
+margin_bottom = 470.0
+window_title = "Open a File"
+mode = 0
+filters = PoolStringArray( "*.csv" )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="btnClear" to="." method="clear_vec"]
+[connection signal="pressed" from="btnImportLevel" to="." method="_on_btnImportLevel_pressed"]
+[connection signal="file_selected" from="dlgImportLevel" to="." method="_on_dlgImportLevel_file_selected"]

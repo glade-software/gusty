@@ -8,6 +8,7 @@ var total_vec = Vector3()
 var magnitude = 0.0
 
 signal new_vector(impulse_vec)
+signal new_mapdata()
 
 func _ready():
   $LabelCurrentVec.text = current_vec_zero_str
@@ -26,3 +27,19 @@ func _input(event):
 func clear_vec():
   total_vec = Vector3()
   $LabelCurrentVec.text = current_vec_zero_str
+
+
+func _on_btnImportLevel_pressed():
+  # open a file dialog
+  print("btn pressed")
+#  (x: float, y: float, width: float, height: float)
+  $dlgImportLevel.popup()
+  
+  
+  pass # Replace with function body.
+
+
+func _on_dlgImportLevel_file_selected(path):
+  
+  # path is the file. I can send to the floor node
+  emit_signal("new_mapdata", path)
