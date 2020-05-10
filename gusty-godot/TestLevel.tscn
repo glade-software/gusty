@@ -15,9 +15,10 @@ wall_scene = ExtResource( 6 )
 
 [node name="TestCamera" type="Camera" parent="."]
 transform = Transform( 0.707107, -0.353553, 0.612373, 0, 0.866026, 0.499999, -0.707107, -0.353553, 0.612373, 3.169, 2.98223, 3.11267 )
+current = true
 script = ExtResource( 5 )
-enabled = false
 sensitivity = 0.397
+max_speed = Vector3( 3, 3, 3 )
 use_gui = false
 
 [node name="Ball" parent="." instance=ExtResource( 1 )]
@@ -33,7 +34,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2144, 4.03382, -3.34172 )
 
 [node name="ShotCamera" parent="." instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65614, 3.955 )
-current = true
 target = NodePath("../Ball")
 down_tilt = 20.0
 [connection signal="reset_ball" from="Floor" to="Ball" method="reset"]
