@@ -23,6 +23,8 @@ func _input(event):
     emit_signal("new_vector", vec_to_send)
   elif event.is_action_pressed("hit_ball"):
     clear_vec() 
+  elif event.is_action_pressed("import"):
+    _on_btnImportLevel_pressed()
 
 func clear_vec():
   total_vec = Vector3()

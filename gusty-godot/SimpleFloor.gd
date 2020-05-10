@@ -1,5 +1,8 @@
 extends StaticBody
 
+export(PackedScene) var wall_scene
+signal reset_ball(ball_pos)
+
 func new_mapdata_received(path):
   
   var height_map_shape = $CollisionShape.shape
@@ -105,3 +108,37 @@ func new_mapdata_received(path):
   st.generate_normals()
   var generated_mesh = st.commit()
   $MeshInstance.mesh = generated_mesh
+  
+  # instance walls, set them to correct positions
+  # get x z position right
+  # rotate about y axis
+  # stretch in its own z axis
+  #changes the wall, so shouldn't have to adjust y pos
+  
+  # First wall, make centre max z wall
+  var wall = wall_scene.instance()
+  add_child(wall)
+  wall.translation.z = start_z
+  wall.rotation.y = PI/2
+  wall.scale.z = start_x
+  wall = wall_scene.instance()
+  add_child(wall)
+  wall.translation.z = -start_z
+  wall.rotation.y = -PI/2
+  wall.scale.z = start_x
+  wall = wall_scene.instance()
+  add_child(wall)
+  wall.translation.x = start_x
+  wall.rotation.y = PI
+  wall.scale.z = start_z
+  
+  wall = wall_scene.instance()
+  add_child(wall)
+  wall.translation.x = -start_x
+  wall.rotation.y = -PI
+  wall.scale.z = start_z
+  
+  # where should we spawn ball?
+  var ball_pos = Vector3(start_x + 1, 1, start_z + 1)
+  
+  emit_signal("reset_ball", ball_pos)

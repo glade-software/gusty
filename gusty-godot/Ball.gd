@@ -33,3 +33,7 @@ func add_vector(vector):
 
 func clear_vector():
   total_shot_vector = Vector3()
+
+func reset(position):
+  # Just don't bother resetting the shot vector / speed yet
+  translation = position
