@@ -1,1 +1,9 @@
-terrain-gen/build/
+src/build/
+*.dblite
+*.obj
+*.lib
+*.pdb
+*.exp
+*.dll
+*.ilk
+

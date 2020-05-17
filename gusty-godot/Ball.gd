@@ -36,4 +36,9 @@ func clear_vector():
 
 func reset(position):
   # Just don't bother resetting the shot vector / speed yet
+  
+  # set position based new terrain signal, reset velocity
   translation = position
+  linear_velocity = Vector3.ZERO
+  angular_velocity = Vector3.ZERO
+  

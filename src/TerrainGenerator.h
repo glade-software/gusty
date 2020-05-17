@@ -4,13 +4,14 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <optional>
 
 class TerrainGenerator{
 public: 
   using HeightMap = std::vector<std::vector<float>>;
   
   TerrainGenerator();
-  HeightMap generateTerrain(const int seed = 0);
+  std::optional<HeightMap> generateTerrain(const int seed = 0);
 
   void setHeight(const size_t height);
   void setWidth(const size_t width);
@@ -33,11 +34,19 @@ private:
 
   // Member variables for configuration
   //Give them default values, use setters for configuring
+  static constexpr size_t MIN_H_SIZE = 3;
+  static constexpr size_t MIN_V_SIZE = 3;
   size_t h_size_ = 100;
   size_t v_size_ = 100;
 
   //How many h / v units (above sizes) to include in one gradient calculation
   size_t gradient_grid_size_ = 12;
+
+  //Scaling parameter
+
+  //max / min heights
+
+  //step size for different allowed heights (discretize)
 
 };
 

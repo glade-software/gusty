@@ -1,7 +1,6 @@
 #include "TerrainGenerator.h"
 #include <sstream>
 #include <random>
-#include <iostream>
 #include <utility>
 
 TerrainGenerator::TerrainGenerator(){
@@ -11,7 +10,13 @@ TerrainGenerator::TerrainGenerator(){
 /**
  * For now, same config + same seed should generate the same map
 */
-TerrainGenerator::HeightMap TerrainGenerator::generateTerrain(const int seed){
+std::optional<TerrainGenerator::HeightMap> TerrainGenerator::generateTerrain(const int seed){
+
+  //Check that parameters are valid
+  if(v_size_ < MIN_V_SIZE || MIN_H_SIZE < 1 || 
+     gradient_grid_size_ > v_size_ || gradient_grid_size_ > h_size_){
+       return std::nullopt;
+  }
 
   //generate permutation table from seed.
   auto p_table = calcPermutations(seed);
@@ -50,16 +55,17 @@ TerrainGenerator::HeightMap TerrainGenerator::generateTerrain(const int seed){
 
       float lerp1 = lerp(g_aa, g_ba, lerp_amt_x);
       float lerp2 = lerp(g_ab, g_bb, lerp_amt_x);
-
-      ret[x][y] = lerp(lerp1, lerp2, lerp_amt_y);
+      //Access violation here if h_size_ != v_size_
+      //specifically h = 50, v = 40
+      //x = 40, y=0
+      ret[y][x] = lerp(lerp1, lerp2, lerp_amt_y);
     }
   }
 
-  return ret;
+  return std::optional<HeightMap>{ret};
 }
 
 float TerrainGenerator::grad(const uint8_t hash, const float x, const float y){
-  std::cout << "distance vector: (" << x << ", " << y << ")" << std::endl;
   //switch 2 lsb of hash
   //gives us one of four vectors (1, 1), (1, -1), (-1, 1), (-1, -1)
   //to dot product with (x, y)

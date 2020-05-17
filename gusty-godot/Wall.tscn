@@ -16,6 +16,5 @@ shape = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 0.1, 0, 0, 0, 3.229, 0, 0, 0, 1, 0.0919304, 3.21267, 0 )
-visible = false
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )
