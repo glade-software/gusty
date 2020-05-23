@@ -2,6 +2,7 @@
 #include <sstream>
 #include <random>
 #include <utility>
+#include <cmath>
 
 TerrainGenerator::TerrainGenerator(){
 
@@ -18,6 +19,12 @@ std::optional<TerrainGenerator::HeightMap> TerrainGenerator::generateTerrain(con
        return std::nullopt;
   }
 
+  if(min_height_ && max_height_){
+    if(*min_height_ >= *max_height_){
+      return std::nullopt;
+    }
+  }
+
   //generate permutation table from seed.
   auto p_table = calcPermutations(seed);
 
@@ -25,6 +32,8 @@ std::optional<TerrainGenerator::HeightMap> TerrainGenerator::generateTerrain(con
   for(auto& h_vec : ret){
    h_vec.resize(h_size_);
   }
+
+  const float floor = min_height_.value_or( - height_scale_);
 
   //loop over each point in input grid
   for(size_t x = 0; x < h_size_; x++){
@@ -55,10 +64,29 @@ std::optional<TerrainGenerator::HeightMap> TerrainGenerator::generateTerrain(con
 
       float lerp1 = lerp(g_aa, g_ba, lerp_amt_x);
       float lerp2 = lerp(g_ab, g_bb, lerp_amt_x);
-      //Access violation here if h_size_ != v_size_
-      //specifically h = 50, v = 40
-      //x = 40, y=0
-      ret[y][x] = lerp(lerp1, lerp2, lerp_amt_y);
+      
+      //normalize the result to range of -1 to 1 by dividing by gradient size, and scale by configured factor
+      float calculated_height = height_scale_ * lerp(lerp1, lerp2, lerp_amt_y) / gradient_grid_size_;
+
+      //for the below processing, would it make a significant difference to define const bool at the start of the function, 
+      //instead of checking the if optionals have value each time? Probably insignificant, whatever is more readable
+
+      //apply limits
+      if(min_height_.has_value()){
+        if(calculated_height < *min_height_){
+          calculated_height = *min_height_;
+        }
+      }
+      if(max_height_.has_value()){
+        if(calculated_height > *max_height_){
+          calculated_height = *max_height_;
+        }
+      }
+      //fix number to step size
+      if(height_step_size_.has_value()){
+        calculated_height = discretize(calculated_height, floor, *height_step_size_);
+      }
+      ret[y][x] = calculated_height;
     }
   }
 
@@ -85,6 +113,13 @@ float TerrainGenerator::fade(const float t){
   return t*t*t*(t*(t*6.0f - 15.0f) + 10.0f);
 }
 
+float TerrainGenerator::discretize(const float val, const float floor, const float step_size) const{
+  const float floor_dist = val - floor;
+  const long steps_from_floor = std::lround(floor_dist / step_size);
+
+  return floor + steps_from_floor * step_size;
+}
+
 //Configuration setters
 void TerrainGenerator::setHeight(const size_t height){
   v_size_ = height;
@@ -94,6 +129,17 @@ void TerrainGenerator::setWidth(const size_t width){
 }
 void TerrainGenerator::setGradientGridSize(const size_t grid_size){
   gradient_grid_size_ = grid_size;
+}
+
+void TerrainGenerator::setHeightScale(const float height_scale){
+  height_scale_ = height_scale;
+}
+void TerrainGenerator::setHeightStepSize(const float step_size){
+  height_step_size_ = step_size;
+}
+void TerrainGenerator::setHeightLimits(const float min, const float max){
+  min_height_ = min;
+  max_height_ = max;
 }
 
 std::string TerrainGenerator::csvFromHeightMap(const HeightMap& height_map){

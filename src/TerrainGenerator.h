@@ -16,6 +16,10 @@ public:
   void setHeight(const size_t height);
   void setWidth(const size_t width);
   void setGradientGridSize(const size_t grid_size);
+  void setHeightScale(const float scale);
+  void setHeightStepSize(const float step_size);
+
+  void setHeightLimits(const float min, const float max);
 
   static std::string csvFromHeightMap(const HeightMap& height_map);
 
@@ -32,10 +36,13 @@ private:
   float lerp(const float pt1, const float pt2, const float interpolate_amt);
   float fade(const float t);
 
+  float discretize(const float val, const float floor, const float step_size) const;
+
   // Member variables for configuration
   //Give them default values, use setters for configuring
   static constexpr size_t MIN_H_SIZE = 3;
   static constexpr size_t MIN_V_SIZE = 3;
+
   size_t h_size_ = 100;
   size_t v_size_ = 100;
 
@@ -43,10 +50,14 @@ private:
   size_t gradient_grid_size_ = 12;
 
   //Scaling parameter
+  float height_scale_ = 10.0f;
 
-  //max / min heights
+  //max / min heights (maybe not)
+  std::optional<float> min_height_;
+  std::optional<float> max_height_;
 
   //step size for different allowed heights (discretize)
+  std::optional<float> height_step_size_;
 
 };
 

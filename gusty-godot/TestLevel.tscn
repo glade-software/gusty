@@ -39,7 +39,7 @@ dist_above = 20.0
 down_tilt = 40.0
 
 [node name="PerlinTerrain" parent="." instance=ExtResource( 8 )]
-"Noise Frequency" = 18
+"Height Scale" = 3.314
 Wall = ExtResource( 6 )
 [connection signal="new_vector" from="TestHUD" to="Ball" method="add_vector"]
 [connection signal="new_terrain_generated" from="PerlinTerrain" to="Ball" method="reset"]

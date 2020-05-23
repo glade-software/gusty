@@ -33,14 +33,22 @@ private:
 
   //Parameters to be passed to TerrainGenerator
 
+  int terrain_seed_;
+
   //Default height map grid width/height
   size_t x_size_;
   size_t z_size_;
   //Default size of square in perlin grid;
   size_t noise_freq_;
   //Max/Min height currently unused
-  size_t max_height_;
-  size_t min_height_;
+  float max_height_;
+  float min_height_;
+
+  bool discretize_height_;
+  bool limit_height_;
+
+  float height_scale_;
+  float height_step_size_;
   
 };
 }
