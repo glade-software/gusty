@@ -57,7 +57,7 @@ void PerlinTerrain::_init(){
 
 void PerlinTerrain::_input(InputEvent* event){
   if(event->is_action_pressed("generate")){
-    generateNewTerrain(terrain_seed_);
+    generateNewTerrain();
   }
 }
 
@@ -75,38 +75,31 @@ void PerlinTerrain::_ready(){
   }
 }
 
-void PerlinTerrain::generateNewTerrain(const int seed){
+void PerlinTerrain::generateNewTerrain(){
   Godot::print("generating terrain");
-  TerrainGenerator tg;
 
-  //Apply current settings
-  tg.setHeight(z_size_);
-  tg.setWidth(x_size_);
-  tg.setGradientGridSize(noise_freq_);
-  tg.setHeightScale(height_scale_);
+  TerrainGen::Config terrain_config;
+  terrain_config.v_size = z_size_;
+  terrain_config.h_size = x_size_;
+  terrain_config.gradient_grid_size = noise_freq_;
+  terrain_config.height_scale = height_scale_;
   if(limit_height_){
-    tg.setHeightLimits(min_height_, max_height_);
+    terrain_config.max_height = max_height_;
+    terrain_config.min_height = min_height_;
   }
   if(discretize_height_){
-    tg.setHeightStepSize(height_step_size_);
+    terrain_config.height_step_size = height_step_size_;
   }
 
-  //set max / min height once I have those options. 
-
-
-  auto generated_map = tg.generateTerrain(seed);
+  auto generated_map = TerrainGen::generateTerrain(terrain_seed_, terrain_config);
   if(!generated_map){
     Godot::print("map generation failed, invalid parameters");
     return;
   }
 
-  //height map is vec<vec<float>> - how to flatten this into a 1D vec for height map
-
+  //height map is vec<vec<float>> - how to flatten this into a 1D vec for height map?
   //width is the size of inner vector
-
   //depth is the size of outer vector
-
-    // Ref<int> t;
   auto height_map_shape = Object::cast_to<HeightMapShape>(*collision_shape_->get_shape());
   if(!height_map_shape){
     Godot::print("Terrain: error finding height map shape");
@@ -116,7 +109,8 @@ void PerlinTerrain::generateNewTerrain(const int seed){
   //Delete walls that may have been left behind
   auto children = get_children();
 
-  for(size_t i = 0; i < children.size(); i++){
+  for(int i = 0; i < children.size(); i++){
+    //This should be based on a tag or something, could be otehr children that are StaticBody but not walls
     auto wall = Object::cast_to<StaticBody>(children[i]);
     if(wall){
       wall->queue_free();
