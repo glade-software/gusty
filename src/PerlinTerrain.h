@@ -22,7 +22,7 @@ public:
 
 private:
 
-  void generateNewTerrain(const int seed = 0);
+  void generateNewTerrain();
 
   const String MESH_INSTANCE_NAME = "MeshInstance";
   MeshInstance* mesh_;
